@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN" >
+<head>
+<meta charset="utf-8">
+<title>Document</title>
+<style type="text/css">
+	body {
+	  font-family: Menlo, Consolas, monospace;
+	  color: #444;
+	}
+	.item {
+	  cursor: pointer;
+	}
+	.bold {
+	  font-weight: bold;
+	}
+	ul {
+	  padding-left: 1em;
+	  line-height: 1.5em;
+	  list-style-type: dot;
+	}
+
+</style>
+</head>
+<body>
+<h1>vue的树</h1>
+<!-- 添加注释 -->
+<ul id="demo">
+	  <item
+	    class="item"
+	    :model="treeData">
+	  </item>
+</ul>
+	<script type="text/javascript" src="vue.js"></script>
+	<script type="text/x-template" id="item-template">
+	  <li>
+	    <div
+	      :class="{bold: isFolder}"
+	      @click="toggle">
+	      {{ model.name }}
+	      <span v-if="isFolder">[{{ open ? '-' : '+' }}]</span>
+	    </div>
+	    <ul v-show="open" v-if="isFolder">
+	      <item
+	        class="item"
+	        v-for="(model, index) in model.children"
+	        :key="index"
+	        :model="model">
+	      </item>
+	    </ul>
+	  </li>
+</script>
+<script type="text/javascript">
+	
+	var data = {
+	  name: 'My Tree',
+	  id:3,
+	  children: [
+	    { name: 'hello' ,id:1},
+	    { name: 'wat',id:2 },
+	    {
+	      name: 'child folder',
+	      id:4,
+	      children: [
+	        {
+	          name: 'child folder',
+	          id:5,
+	          children: [
+	            { name: 'hello' ,id:6},
+	            { name: 'wat',id:7, }
+	          ]
+	        },
+	        { name: 'hello',id:8},
+	        { name: 'wat',id:9 },
+	        {
+	          name: 'child folder',
+	          id:10,
+	          children: [
+	            { name: 'hello',id:11 },
+	            { name: 'wat',id:12 }
+	          ]
+	        }
+	      ]
+	    }
+	  ]
+	}
+
+	// define the item component
+	Vue.component('item', {
+	  template: '#item-template',
+	  props: {
+	    model: Object
+	  },
+	  data: function () {
+	    return {
+	      open: false
+	    }
+	  },
+	  computed: {
+	    isFolder: function () {
+	      return this.model.children &&
+	        this.model.children.length
+	    }
+	  },
+	  methods: {
+	    toggle: function () {
+	      if (this.isFolder) {
+	        this.open = !this.open
+	      }
+	    },
+	    addChild: function () {
+	      this.model.children.push({
+	        name: 'new stuff'
+	      })
+	    }
+	  }
+	})
+
+	// boot up the demo
+	var demo = new Vue({
+	  el: '#demo',
+	  data: {
+	    treeData: data
+	  }
+	})
+</script>
+</body>
+</html>
